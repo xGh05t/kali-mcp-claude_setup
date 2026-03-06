@@ -1,4 +1,4 @@
-# kali-mcp-claude-setup
+# kali-mcp-claude_setup
 
 ![Kali Linux](https://img.shields.io/badge/Kali_Linux-2024.x-557C94?style=flat&logo=kalilinux&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.12+-3776AB?style=flat&logo=python&logoColor=white)
