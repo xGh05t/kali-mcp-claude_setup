@@ -24,9 +24,18 @@ A wrapper script starts both automatically when Claude Desktop launches and kill
 
 ---
 
+## Scripts in This Repo
+
+| Script | What It Does |
+|---|---|
+| `setup.sh` | Full setup: installs Claude Desktop, MCP server, all tools, wrapper script, and config |
+| `tools.sh` | Tools only: installs and verifies all 12 Kali tools without touching Claude Desktop |
+
+---
+
 ## Quick Install (Recommended)
 
-Run the setup script as root/sudo:
+Run the full setup script as root/sudo:
 
 ```bash
 git clone https://github.com/xGh05t/kali-mcp-claude_setup.git
@@ -35,6 +44,20 @@ sudo bash setup.sh
 ```
 
 Then skip to [Verify It Works](#verify-it-works).
+
+---
+
+## Install Tools Only
+
+If Claude Desktop is already set up and you just need to pull the Kali tools:
+
+```bash
+git clone https://github.com/xGh05t/kali-mcp-claude_setup.git
+cd kali-mcp-claude_setup
+sudo bash tools.sh
+```
+
+This installs all 12 tools, verifies each binary is reachable, and decompresses `rockyou.txt`. Output clearly shows a ✔ or ✘ for every tool so you know exactly what's ready.
 
 ---
 
@@ -86,7 +109,7 @@ which mcp-server        # should print /usr/bin/mcp-server
 
 ### Step 3 — Install the Security Tools
 
-The MCP server can call these tools, but they need to be installed first:
+The MCP server can call these tools, but they need to be installed first. Use `tools.sh` or install manually:
 
 ```bash
 sudo apt install -y \
@@ -291,6 +314,8 @@ cat /tmp/kali-api.log
 # Confirm the tool is installed, e.g.:
 which nmap
 ```
+
+Run `sudo bash tools.sh` to verify and reinstall any missing tools.
 
 ---
 
