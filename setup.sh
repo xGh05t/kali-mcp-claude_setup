@@ -4,16 +4,23 @@
 
 set -e
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m'
+RED='\\033[0;31m'
+GREEN='\\033[0;32m'
+YELLOW='\\033[1;33m'
+BLUE='\\033[0;34m'
+NC='\\033[0m'
 
 info()    { echo -e "${GREEN}[*]${NC} $1"; }
 warn()    { echo -e "${YELLOW}[!]${NC} $1"; }
 error()   { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
-section() { echo -e "\n${BLUE}━━━ $1 ━━━${NC}"; }
+
+# Prints a full-width section header with visible separator lines
+section() {
+  echo ""
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${BLUE}  $1${NC}"
+  echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+}
 
 echo ""
 echo "╔══════════════════════════════════════════════╗"
@@ -35,9 +42,8 @@ fi
 REAL_USER="${SUDO_USER:-$USER}"
 REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 
-# ─────────────────────────────────────────────────────────────
 section "Step 1: Claude Desktop"
-# ─────────────────────────────────────────────────────────────
+
 info "Adding Claude Desktop repository (community package for Linux)..."
 curl -fsSL https://aaddrick.github.io/claude-desktop-debian/KEY.gpg \
   | gpg --dearmor -o /usr/share/keyrings/claude-desktop.gpg
@@ -52,9 +58,8 @@ apt update -qq
 info "Installing Claude Desktop..."
 apt install -y claude-desktop
 
-# ─────────────────────────────────────────────────────────────
 section "Step 2: Kali MCP Server"
-# ─────────────────────────────────────────────────────────────
+
 info "Installing mcp-kali-server..."
 apt install -y mcp-kali-server
 
@@ -67,9 +72,8 @@ if ! command -v mcp-server &>/dev/null; then
 fi
 info "Verified: kali-server-mcp and mcp-server are installed."
 
-# ─────────────────────────────────────────────────────────────
 section "Step 3: Security Tools"
-# ─────────────────────────────────────────────────────────────
+
 info "Installing required Kali security tools..."
 apt install -y \
   dirb gobuster nikto nmap enum4linux-ng \
@@ -81,9 +85,8 @@ if [ -f /usr/share/wordlists/rockyou.txt.gz ]; then
   gunzip -fv /usr/share/wordlists/rockyou.txt.gz
 fi
 
-# ─────────────────────────────────────────────────────────────
 section "Step 4: Wrapper Script"
-# ─────────────────────────────────────────────────────────────
+
 info "Creating MCP wrapper script at /usr/local/bin/kali-mcp-wrapper.sh..."
 tee /usr/local/bin/kali-mcp-wrapper.sh > /dev/null << 'EOF'
 #!/usr/bin/env bash
@@ -125,9 +128,8 @@ EOF
 chmod +x /usr/local/bin/kali-mcp-wrapper.sh
 info "Wrapper script created and made executable."
 
-# ─────────────────────────────────────────────────────────────
 section "Step 5: Claude Desktop Config"
-# ─────────────────────────────────────────────────────────────
+
 CONFIG_DIR="$REAL_HOME/.config/Claude"
 CONFIG_FILE="$CONFIG_DIR/claude_desktop_config.json"
 mkdir -p "$CONFIG_DIR"
@@ -171,18 +173,19 @@ fi
 chown "$REAL_USER:$REAL_USER" "$CONFIG_FILE"
 info "Config saved to: $CONFIG_FILE"
 
-# ─────────────────────────────────────────────────────────────
 echo ""
-echo "╔══════════════════════════════════════════════╗"
-echo -e "║  ${GREEN}Setup complete! Here's what to do next:${NC}     ║"
-echo "╚══════════════════════════════════════════════╝"
+echo -e "${GREEN}╔══════════════════════════════════════════════╗${NC}"
+echo -e "${GREEN}║     Setup complete!                          ║${NC}"
+echo -e "${GREEN}╚══════════════════════════════════════════════╝${NC}"
 echo ""
-echo "  1. Launch Claude Desktop and sign in"
-echo "  2. Start a new chat and type:"
-echo '     "Use the server_health tool from your kali-tools MCP server"'
-echo "  3. You should see all 12 tools confirmed as available"
+echo "  Next steps:"
 echo ""
-echo "  To monitor logs:"
+echo "    1. Launch Claude Desktop and sign in"
+echo "    2. Start a new chat and type:"
+echo '       "Use the server_health tool from your kali-tools MCP server"'
+echo "    3. You should see all 12 tools confirmed as available"
+echo ""
+echo "  Logs to monitor:"
 echo "    tail -f /tmp/kali-api.log"
 echo "    tail -f ~/.config/Claude/logs/mcp*.log"
 echo ""
