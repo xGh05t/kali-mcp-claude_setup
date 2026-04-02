@@ -132,25 +132,27 @@ This script manages starting and stopping both processes together.
 ```bash
 sudo tee /usr/local/bin/kali-mcp-wrapper.sh << 'EOF'
 #!/usr/bin/env bash
-# Kill any leftover instance first
+ 
+# Kill anything holding port 5000 and any leftover server instances
+fuser -k 5000/tcp 2>/dev/null || true
 pkill -f kali-server-mcp 2>/dev/null || true
 sleep 0.5
-
+ 
 # Start the Flask API in the background
 kali-server-mcp > /tmp/kali-api.log 2>&1 &
 FLASK_PID=$!
-
+ 
 # Wait until port 5000 is ready (up to 10 seconds)
 for i in $(seq 1 10); do
   sleep 1
   ss -tlnp 2>/dev/null | grep -q ':5000' && break
 done
-
+ 
 # Start the MCP bridge (Claude Desktop talks to this via stdio)
 mcp-server
-
+ 
 # Clean up when Claude Desktop closes
-kill "$FLASK_PID" 2>/dev/null
+kill -9 "$FLASK_PID" 2>/dev/null
 EOF
 
 sudo chmod +x /usr/local/bin/kali-mcp-wrapper.sh
