@@ -183,17 +183,20 @@ Add the `mcpServers` block. If your config already has content (like `preference
 }
 ```
 
-If you already have other content in the file, it should look like this:
+If you already have other content in the file, it might look like this:
 
 ```json
 {
-  "preferences": {
-    "...your existing preferences..."
-  },
   "mcpServers": {
     "kali-tools": {
       "command": "/usr/local/bin/kali-mcp-wrapper.sh"
     }
+  },
+  "preferences": {
+    "coworkScheduledTasksEnabled": true,
+    "ccdScheduledTasksEnabled": true,
+    "sidebarMode": "task",
+    "coworkWebSearchEnabled": true
   }
 }
 ```
