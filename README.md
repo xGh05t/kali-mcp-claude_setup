@@ -267,7 +267,7 @@ tail -f ~/.config/Claude/logs/mcp*.log
 ## Troubleshooting
 
 ### Fix mcp-kali-server/server.py
-***There are some versions of the server.py script that do not properly read in the tools from the MCP server. This is a fix.
+***There are some versions of the server.py script that do not properly read in the tools from the MCP server. This is a fix.***
 
 ```bash
 sudo sed -i 's/result = execute_command(\["which", tool\])/result = execute_command(f"which {tool}")/' /usr/share/mcp-kali-server/server.py
